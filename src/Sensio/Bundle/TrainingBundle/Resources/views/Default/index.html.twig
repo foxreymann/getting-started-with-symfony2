@@ -1,1 +1,16 @@
-Hello {{ name }}!
+{% extends '::base.html.twig' %}
+
+{% block title %}
+    Hello {{ name }}!
+{% endblock %}
+
+{% block body %}
+    <p>
+        Hello {{ name }}!
+    
+        You're on a {{ path('greet', { name: name }) }}
+    </p>
+
+    <p>
+        Dont forget to <a href="{{ path('greet', {name: 'Albert'}) }}">greet Albert </a>
+{% endblock %}
