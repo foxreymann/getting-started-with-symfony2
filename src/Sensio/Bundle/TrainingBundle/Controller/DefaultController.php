@@ -38,5 +38,13 @@ class DefaultController extends Controller
         return array('name' => $name);
     }     
 
+    /**
+     * @Template
+     */
+    public function counterAction()
+    {
+       return array('number' => 4); 
+
+    }
 
 }

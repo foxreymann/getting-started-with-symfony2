@@ -7,6 +7,7 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
+        {{ render(controller('SensioTrainingBundle:Default:counter')) }}
         <div id="header">
             {{ include('::menu.html.twig', { 'menu_id': 'menu_top' }) }}
         </div>
