@@ -7,19 +7,19 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Session;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/hello/{name}", name="greet" )
      */
-    public function helloAction($name)
+    public function helloAction(Request $request, $name)
     {
-        $cookie = new Cookie('username', $name, new \DateTime('+30 days'));
+        $session = $request->getSession();
+        $session->set('username', $name);
 
         $response = $this->redirect($this->generateUrl('hello'));
-        $response->headers->setCookie($cookie);
 
         return $response;
     }
@@ -30,13 +30,12 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        if (!$name = $request->cookies->get('username')) {
+        $session = $request->getSession();
+        if (!$name = $session->get('username')) {
             throw $this->createNotFoundException('No username found'); 
         }
 
         return array('name' => $name);
-
-
     }     
 
 

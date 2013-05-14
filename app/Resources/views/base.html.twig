@@ -7,7 +7,13 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
+        <div id="header">
+            {{ include('::menu.html.twig', { 'menu_id': 'menu_top' }) }}
+        </div>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
+        <div id="footer">
+            {{ include('::menu.html.twig', { 'menu_id': 'menu_bot' }) }}
+        </div>
     </body>
 </html>
