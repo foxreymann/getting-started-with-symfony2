@@ -23,4 +23,12 @@ class Contact
       */
     public $message;
 
+    /**
+     * @Assert\True(message="Subject and message must differ")
+     */
+    public function isSubjectAndMessageValid()
+    {
+        return $this->subject !== $this->message;
+    }
+
 }
