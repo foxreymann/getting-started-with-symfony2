@@ -22,9 +22,24 @@ class ContactController extends Controller
 
         if ($request->isMethod('POST')) {
             $form->bind($request);
+
+            if ($form->isValid()) {
+                $url = $this->generateUrl('success');
+
+                return $this->redirect($url); 
+            }
         }
 
         return array('form' => $form->createView());
+    }
+
+    /**
+     * @Route("/contact/success", name = "success")
+     * @Template()
+     */
+    public function successAction()
+    {
+        return array();
     }
 
 }
