@@ -24,7 +24,7 @@
             {% for task in tasks %}
                 <tr>
                     <td class="center">{{ task.id }}</td>
-                    <td><a href="#">{{ task.title }}</a></td>
+                    <td><a href="{{  path("todo_show", {'id' : task.id }  ) }}">{{ task.title }}</a></td>
                     <td class="center">
                         {% if task.is_done %}
                             <span class="done">done</span>
