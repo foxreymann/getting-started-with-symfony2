@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -67,6 +68,53 @@ class DefaultController extends Controller
         // pass to twig
         return array('todo' => $todo);
 
+    }
+
+    /**
+     * @Route("/create", name="todo_create")
+     */
+    public function createAction(Request $request) 
+    {
+        // Opening DB connection
+        if (!$conn = mysql_connect('127.0.0.1', 'root', '')) {
+            die('Unable to connect to MySQL : '. mysql_errno() .' '. mysql_error());
+        }
+
+        mysql_select_db('training_todo', $conn) or die('Unable to select database "training_todo"');
+
+        // get title or red to 404
+        if(!$title = $request->request->get('title')) {
+            throw new NotFoundHttpException('Title is required');
+        }
+
+        $query = 'INSERT INTO todo (title) VALUES(\''.mysql_escape_string($title) . '\');';
+        mysql_query($query, $conn) or die('Unable to create new task : ' . mysql_error());
+
+        mysql_close($conn);
+
+        // redirect to tasks list
+        return $this->redirect($this->generateUrl('todo_list')); 
+    }
+    
+    /**
+     * @Route("/{id}/close", name="todo_close", requirements={"id" : "\d+"}) 
+     */
+    public function closeAction($id) 
+    {
+        // Opening DB connection
+        if (!$conn = mysql_connect('127.0.0.1', 'root', '')) {
+            die('Unable to connect to MySQL : '. mysql_errno() .' '. mysql_error());
+        }
+
+        mysql_select_db('training_todo', $conn) or die('Unable to select database "training_todo"');
+
+        $query = 'UPDATE todo SET is_done = 1 WHERE id = '. mysql_real_escape_string($id);
+        mysql_query($query, $conn) or die('Unable to update existing task : '. mysql_error());
+
+        mysql_close($conn);
+
+        // redirect to tasks list
+        return $this->redirect($this->generateUrl('todo_list')); 
     }
 
 }
