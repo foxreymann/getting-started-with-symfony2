@@ -24,6 +24,8 @@ class ContactController extends Controller
             $form->bind($request);
 
             if ($form->isValid()) {
+                $contact->send('tomasz.jureczko@gmail.com');
+    
                 $url = $this->generateUrl('success');
 
                 return $this->redirect($url); 
