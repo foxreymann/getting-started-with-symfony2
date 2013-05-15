@@ -117,4 +117,25 @@ class DefaultController extends Controller
         return $this->redirect($this->generateUrl('todo_list')); 
     }
 
+    /**
+     * @Route("/{id}/delete", name="todo_delete", requirements={"id" : "\d+"}) 
+     */
+    public function deleteAction($id) 
+    {
+        // Opening DB connection
+        if (!$conn = mysql_connect('127.0.0.1', 'root', '')) {
+            die('Unable to connect to MySQL : '. mysql_errno() .' '. mysql_error());
+        }
+
+        mysql_select_db('training_todo', $conn) or die('Unable to select database "training_todo"');
+
+        $query = 'DELETE FROM todo WHERE id = '. mysql_real_escape_string($id);
+        mysql_query($query, $conn) or die('Unable to update existing task : '. mysql_error());
+
+        mysql_close($conn);
+
+        // redirect to tasks list
+        return $this->redirect($this->generateUrl('todo_list')); 
+    }
+
 }
