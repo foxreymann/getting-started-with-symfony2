@@ -1,7 +1,7 @@
 sensio_todo:
     resource: "@SensioTodoBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /todo
 
 sensio_training:
     resource: "@SensioTrainingBundle/Controller/"

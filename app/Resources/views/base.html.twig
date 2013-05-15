@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                    <title>{% block title %}Todo Application!{% endblock %}</title>
+
+                        {% block stylesheets %}
+                                <link rel="stylesheet" media="screen" type="text/css"
+                                                  href="{{ asset('/bundles/sensiotodo/css/style.css') }}" />
+                                                      {% endblock %}
+
+                                                          <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+                                                          </head>
+                                                          <body>
+                                                              {% block body %}{% endblock %}
+                                                                      {% block javascripts %}{% endblock %}
+                                                                          </body>
+                                                                          </html>
+                                                      </body></title>
     </head>
-    <body>
-        {{ render(controller('SensioTrainingBundle:Default:counter')) }}
-        <div id="header">
-            {{ include('::menu.html.twig', { 'menu_id': 'menu_top' }) }}
-        </div>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-        <div id="footer">
-            {{ include('::menu.html.twig', { 'menu_id': 'menu_bot' }) }}
-        </div>
-    </body>
 </html>

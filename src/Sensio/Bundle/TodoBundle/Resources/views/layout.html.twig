@@ -1,0 +1,13 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<div id="container">
+    <h1><a href="{{ path('todo_list') }}">My Todos List</a></h1>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+    <div id="footer">
+        (c) copyright - not sensio
+    </div>
+</div>
+{% endblock %}
