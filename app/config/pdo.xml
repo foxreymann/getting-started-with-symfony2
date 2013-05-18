@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+ 
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services 
+              http://symfony.com/schema/dic/services/services-1.0.xsd">
+               
+    <parameters>
+            <parameter key="sensio.db.class">PDO</parameter>
+            <parameter key="sensio.db.dsn">mysql:host=127.0.0.1;dbname=training_todo</parameter>
+            <parameter key="sensio.db.user">root</parameter>
+            <parameter key="sensio.db.pwd"></parameter>
+    </parameters>
+                                         
+    <services>
+        <service id="sensio.db" class="%sensio.db.class%">
+            <argument>%sensio.db.dsn%</argument>
+            <argument>%sensio.db.user%</argument>
+            <argument>%sensio.db.pwd%</argument>
+            <argument type="collection"> 
+                <argument key="3" type="constant">PDO::ERRMODE_EXCEPTION</argument>
+                <argument key="0">false</argument>
+            </argument>
+
+            <call method="query">
+                <argument>SET NAMES 'UTF8'</argument>
+            </call>
+        </service>
+    </services>
+     
+</container>

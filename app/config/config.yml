@@ -1,6 +1,13 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: pdo.xml }
+
+parameters:
+    database.server:
+        username: root
+        password:
+        dsn: mysql:host=127.0.0.1;dbname=training_todo
 
 framework:
     #esi:             ~

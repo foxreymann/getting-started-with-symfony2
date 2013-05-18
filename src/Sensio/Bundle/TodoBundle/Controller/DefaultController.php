@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\TodoBundle\Model\TaskTable;
+use Sensio\Bundle\TodoBundle\Model\Task;
 
 class DefaultController extends Controller
 {
@@ -16,28 +18,12 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        // Opening DB connection
-        if (!$conn = mysql_connect('127.0.0.1', 'root', '')) {
-            die('Unable to connect to MySQL : '. mysql_errno() .' '. mysql_error());
-        }
+        $table = new TaskTable($this->getDatabaseConnection());
 
-        mysql_select_db('training_todo', $conn) or die('Unable to select database "training_todo"');
-        
-        // Counting number of tasks in db
-        $result = mysql_query('SELECT COUNT(*) FROM todo', $conn);
-        $count  = current(mysql_fetch_row($result));
-
-        // Retrive all tasks in DB
-        $tasks = array();
-        $result = mysql_query('SELECT * FROM todo', $conn);
-
-        while ($todo = mysql_fetch_assoc($result)) {
-            $tasks[] = $todo;
-        }
-
-        mysql_close($conn);
-
-        return array('count' => $count, 'tasks' => $tasks);
+        return array(
+            'count' => $table->countAll(),
+            'tasks' => $table->findAll()
+        );
     }
 
     /**
@@ -46,28 +32,16 @@ class DefaultController extends Controller
      */
     public function showAction($id) 
     {
-        // Opening DB connection
-        if (!$conn = mysql_connect('127.0.0.1', 'root', '')) {
-            die('Unable to connect to MySQL : '. mysql_errno() .' '. mysql_error());
-        }
+        $table = new TaskTable($this->getDatabaseConnection());
+   
+        $todo = $table->find($id);
 
-        mysql_select_db('training_todo', $conn) or die('Unable to select database "training_todo"');
-        
-        // Retrive the task from db 
-        $result = mysql_query('SELECT * FROM todo WHERE id = '. $id);
-        $todo = mysql_fetch_assoc($result);
-
-        mysql_close($conn);
-
-        // forward to 404 if task not found
         if(!$todo) {
             throw new NotFoundHttpException(sprintf('Task #%d not found', $id));
-        }        
-
-    
+        }
+ 
         // pass to twig
         return array('todo' => $todo);
-
     }
 
     /**
@@ -75,23 +49,10 @@ class DefaultController extends Controller
      */
     public function createAction(Request $request) 
     {
-        // Opening DB connection
-        if (!$conn = mysql_connect('127.0.0.1', 'root', '')) {
-            die('Unable to connect to MySQL : '. mysql_errno() .' '. mysql_error());
-        }
-
-        mysql_select_db('training_todo', $conn) or die('Unable to select database "training_todo"');
-
-        // get title or red to 404
-        if(!$title = $request->request->get('title')) {
-            throw new NotFoundHttpException('Title is required');
-        }
-
-        $query = 'INSERT INTO todo (title) VALUES(\''.mysql_escape_string($title) . '\');';
-        mysql_query($query, $conn) or die('Unable to create new task : ' . mysql_error());
-
-        mysql_close($conn);
-
+        $task = new Task();
+        $task->title = $request->request->get('title');
+        $task->save($this->getDatabaseConnection());
+        
         // redirect to tasks list
         return $this->redirect($this->generateUrl('todo_list')); 
     }
@@ -101,12 +62,7 @@ class DefaultController extends Controller
      */
     public function closeAction($id) 
     {
-        // Opening DB connection
-        if (!$conn = mysql_connect('127.0.0.1', 'root', '')) {
-            die('Unable to connect to MySQL : '. mysql_errno() .' '. mysql_error());
-        }
-
-        mysql_select_db('training_todo', $conn) or die('Unable to select database "training_todo"');
+        $conn = $this->getDatabaseConnection();
 
         $query = 'UPDATE todo SET is_done = 1 WHERE id = '. mysql_real_escape_string($id);
         mysql_query($query, $conn) or die('Unable to update existing task : '. mysql_error());
@@ -122,12 +78,7 @@ class DefaultController extends Controller
      */
     public function deleteAction($id) 
     {
-        // Opening DB connection
-        if (!$conn = mysql_connect('127.0.0.1', 'root', '')) {
-            die('Unable to connect to MySQL : '. mysql_errno() .' '. mysql_error());
-        }
-
-        mysql_select_db('training_todo', $conn) or die('Unable to select database "training_todo"');
+        $conn = $this->getDatabaseConnection();
 
         $query = 'DELETE FROM todo WHERE id = '. mysql_real_escape_string($id);
         mysql_query($query, $conn) or die('Unable to update existing task : '. mysql_error());
@@ -136,6 +87,10 @@ class DefaultController extends Controller
 
         // redirect to tasks list
         return $this->redirect($this->generateUrl('todo_list')); 
+    }
+
+    private function getDatabaseConnection() {
+        return $this->container->get('sensio.db');
     }
 
 }
